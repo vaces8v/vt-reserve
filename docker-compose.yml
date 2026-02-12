@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: vt-reserve-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vt_reserve
+      POSTGRES_USER: vt_admin
+      POSTGRES_PASSWORD: vt_secret_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vt_admin -d vt_reserve']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Next.js App ─────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vt-reserve-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://vt_admin:vt_secret_2024@postgres:5432/vt_reserve?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-please}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+    expose:
+      - '3000'
+
+  # ── Nginx Proxy Manager ─────────────────────────────
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: vt-reserve-npm
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'     # Admin UI
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - internal
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+  npm_data:
+  npm_letsencrypt:
+
+networks:
+  internal:
+    driver: bridge
