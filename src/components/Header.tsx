@@ -37,7 +37,7 @@ export default function Header() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: isMobileMenuOpen ? -100 : 0 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        transition={{ duration: 0, ease: 'easeInOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
           ? 'bg-white shadow-[0_2px_30px_rgba(0,0,0,0.08)]'
           : 'bg-transparent'
