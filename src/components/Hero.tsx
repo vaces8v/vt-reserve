@@ -39,13 +39,7 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Акцентная линия — только десктоп */}
-      <motion.div
-        initial={{ height: 0 }}
-        animate={{ height: '40%' }}
-        transition={{ duration: 1, delay: 0.5 }}
-        className="absolute left-16 top-1/4 w-1 bg-[var(--primary-red)] hidden lg:block"
-      />
+      {/* Акцентная линия убрана — наслаивалась на контент */}
 
       <div className="relative z-10 max-w-[1400px] mx-auto min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-screen">
