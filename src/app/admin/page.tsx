@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   BarChart3, Users, Clock, CheckCircle, XCircle, TrendingUp,
   Search, Filter, Trash2, MessageSquare, Mail, Phone,
   Settings, LogOut, ChevronLeft, ChevronRight, RefreshCw,
   Inbox, Calendar, Eye, Zap, ArrowUpRight, X, Copy, Check,
-  AlertTriangle, ExternalLink, Shield, Bell, Menu,
+  AlertTriangle, ExternalLink, Shield, Bell,
 } from 'lucide-react';
+import { Drawer } from 'vaul';
 
 type Lead = {
   id: string;
@@ -48,7 +49,8 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>('dashboard');
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -57,23 +59,25 @@ export default function AdminPage() {
       .catch(() => router.push('/admin/login'));
   }, [router]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setHeaderVisible(y < 10 || y < lastScrollY.current);
+      lastScrollY.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/admin/login');
-  };
-
-  const switchTab = (t: Tab) => {
-    setTab(t);
-    setSidebarOpen(false);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[#DC2626] to-[#991b1b] rounded-xl flex items-center justify-center">
-            <span className="text-white font-black text-lg">ВТ</span>
-          </div>
           <div className="w-8 h-8 border-2 border-[#DC2626]/30 border-t-[#DC2626] rounded-full animate-spin" />
         </div>
       </div>
@@ -88,28 +92,15 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f8f8]">
-      {/* Mobile header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#0c0c0c] border-b border-white/[0.06] flex items-center justify-between px-4 z-40">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#DC2626] to-[#991b1b] rounded-lg flex items-center justify-center">
-            <span className="text-white font-black text-xs">ВТ</span>
-          </div>
-          <span className="text-white font-bold text-sm">ВТ-Резерв</span>
-        </div>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-gray-400 hover:text-white transition-colors">
-          {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+      {/* Mobile header — auto-hides on scroll */}
+      <header className={`md:hidden fixed top-0 left-0 right-0 h-12 bg-[#0c0c0c] border-b border-white/[0.06] flex items-center justify-center px-4 z-40 transition-transform ${headerVisible ? 'duration-300 translate-y-0' : 'duration-150 -translate-y-full'}`}>
+        <span className="text-white font-bold text-sm">ВТ-Резерв</span>
       </header>
 
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/60 z-30 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`fixed left-0 top-0 bottom-0 w-[260px] bg-[#0c0c0c] text-white flex flex-col z-30 border-r border-white/[0.04] transition-transform duration-300 md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[260px] bg-[#0c0c0c] text-white flex-col z-30 border-r border-white/[0.04]">
         {/* Logo */}
-        <div className="p-5 pb-4 mt-14 md:mt-0">
+        <div className="p-5 pb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-[#DC2626] to-[#991b1b] rounded-xl flex items-center justify-center shadow-[0_4px_16px_rgba(220,38,38,0.3)]">
               <span className="text-white font-black text-lg">ВТ</span>
@@ -130,7 +121,7 @@ export default function AdminPage() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => switchTab(item.id)}
+              onClick={() => setTab(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${tab === item.id
                 ? 'bg-gradient-to-r from-[#DC2626] to-[#b91c1c] text-white shadow-[0_2px_12px_rgba(220,38,38,0.25)]'
                 : 'text-gray-500 hover:text-white hover:bg-white/[0.04]'
@@ -160,11 +151,11 @@ export default function AdminPage() {
       </aside>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex items-center justify-around z-40 safe-area-pb">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex items-center justify-around z-40">
         {navItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => switchTab(item.id)}
+            onClick={() => setTab(item.id)}
             className={`flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl transition-all ${tab === item.id ? 'text-[#DC2626]' : 'text-gray-400'}`}
           >
             <item.icon size={20} />
@@ -576,102 +567,118 @@ function LeadsPanel() {
           )}
         </div>
 
-        {/* Detail panel — side on desktop, fullscreen overlay on mobile */}
+        {/* Desktop detail panel */}
         {selected && (
-          <>
-            <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setSelected(null)} />
-            <div className="fixed inset-x-0 bottom-0 top-14 md:sticky md:inset-auto md:top-8 md:w-[380px] shrink-0 bg-white md:rounded-2xl shadow-lg md:shadow-sm border-0 md:border border-gray-100 overflow-y-auto z-50 md:z-auto md:h-fit rounded-t-2xl">
-              {/* Detail header */}
-              <div className="px-5 md:px-6 py-4 bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] flex items-center justify-between sticky top-0 z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                    {selected.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold text-sm">{selected.name}</div>
-                    <div className="text-gray-400 text-xs">{new Date(selected.createdAt).toLocaleString('ru-RU')}</div>
-                  </div>
-                </div>
-                <button onClick={() => setSelected(null)} className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all">
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="p-5 md:p-6 space-y-5">
-                {/* Contact info */}
-                <div className="space-y-3">
-                  <a href={`mailto:${selected.email}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
-                    <Mail size={16} className="text-gray-400 group-hover:text-[#DC2626] transition-colors" />
-                    <span className="text-sm text-gray-700 font-medium truncate">{selected.email}</span>
-                  </a>
-                  {selected.phone && (
-                    <a href={`tel:${selected.phone}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
-                      <Phone size={16} className="text-gray-400 group-hover:text-[#DC2626] transition-colors" />
-                      <span className="text-sm text-gray-700 font-medium">{selected.phone}</span>
-                    </a>
-                  )}
-                </div>
-
-                {/* Message */}
-                {selected.message && (
-                  <div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Сообщение</div>
-                    <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl leading-relaxed flex items-start gap-2.5">
-                      <MessageSquare size={15} className="text-gray-300 mt-0.5 shrink-0" />
-                      {selected.message}
-                    </div>
-                  </div>
-                )}
-
-                {/* Status change */}
-                <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-3">Статус</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(STATUS_MAP).map(([key, val]) => {
-                      const Icon = val.icon;
-                      return (
-                        <button
-                          key={key}
-                          onClick={() => updateLead(selected.id, { status: key })}
-                          className={`flex items-center gap-2 text-xs px-3 py-2.5 rounded-xl border transition-all duration-200 ${selected.status === key
-                            ? `${val.bg} ${val.color} font-bold shadow-sm`
-                            : 'border-gray-150 text-gray-400 hover:border-gray-250 hover:text-gray-600 bg-white'
-                            }`}
-                        >
-                          <Icon size={14} />
-                          {val.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Note */}
-                <div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Заметка</div>
-                  <textarea
-                    key={selected.id}
-                    defaultValue={selected.note}
-                    onBlur={(e) => updateLead(selected.id, { note: e.target.value })}
-                    placeholder="Добавьте заметку..."
-                    className="w-full p-3.5 bg-gray-50 border-0 rounded-xl text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-[#DC2626]/15 text-gray-700 placeholder:text-gray-300"
-                  />
-                </div>
-
-                {/* Delete */}
-                <button
-                  onClick={() => deleteLead(selected.id)}
-                  className="w-full flex items-center justify-center gap-2 text-red-400 hover:text-red-500 hover:bg-red-50 py-2.5 rounded-xl text-xs font-medium transition-all border border-transparent hover:border-red-100"
-                >
-                  <Trash2 size={14} />
-                  Удалить заявку
-                </button>
-              </div>
-            </div>
-          </>
+          <div className="hidden lg:block w-[380px] shrink-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-fit sticky top-8">
+            <LeadDetail lead={selected} onClose={() => setSelected(null)} onUpdate={updateLead} onDelete={deleteLead} />
+          </div>
         )}
+
+        {/* Mobile bottom sheet via vaul */}
+        <Drawer.Root open={!!selected} onOpenChange={(open) => { if (!open) setSelected(null); }}>
+          <Drawer.Portal>
+            <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50 lg:hidden" />
+            <Drawer.Content className="fixed bottom-0 left-0 right-0 z-50 lg:hidden outline-none">
+              <div className="bg-white rounded-t-2xl max-h-[85vh] overflow-y-auto">
+                <div className="flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 rounded-full bg-gray-300" />
+                </div>
+                {selected && (
+                  <LeadDetail lead={selected} onClose={() => setSelected(null)} onUpdate={updateLead} onDelete={deleteLead} />
+                )}
+              </div>
+            </Drawer.Content>
+          </Drawer.Portal>
+        </Drawer.Root>
       </div>
     </div>
+  );
+}
+
+function LeadDetail({ lead, onClose, onUpdate, onDelete }: { lead: Lead; onClose: () => void; onUpdate: (id: string, data: Record<string, string>) => void; onDelete: (id: string) => void }) {
+  return (
+    <>
+      <div className="px-5 py-4 bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+            {lead.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <div className="text-white font-semibold text-sm">{lead.name}</div>
+            <div className="text-gray-400 text-xs">{new Date(lead.createdAt).toLocaleString('ru-RU')}</div>
+          </div>
+        </div>
+        <button onClick={onClose} className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all hidden lg:block">
+          <X size={16} />
+        </button>
+      </div>
+
+      <div className="p-5 space-y-5">
+        <div className="space-y-3">
+          <a href={`mailto:${lead.email}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
+            <Mail size={16} className="text-gray-400 group-hover:text-[#DC2626] transition-colors" />
+            <span className="text-sm text-gray-700 font-medium truncate">{lead.email}</span>
+          </a>
+          {lead.phone && (
+            <a href={`tel:${lead.phone}`} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
+              <Phone size={16} className="text-gray-400 group-hover:text-[#DC2626] transition-colors" />
+              <span className="text-sm text-gray-700 font-medium">{lead.phone}</span>
+            </a>
+          )}
+        </div>
+
+        {lead.message && (
+          <div>
+            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Сообщение</div>
+            <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl leading-relaxed flex items-start gap-2.5">
+              <MessageSquare size={15} className="text-gray-300 mt-0.5 shrink-0" />
+              {lead.message}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-3">Статус</div>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(STATUS_MAP).map(([key, val]) => {
+              const Icon = val.icon;
+              return (
+                <button
+                  key={key}
+                  onClick={() => onUpdate(lead.id, { status: key })}
+                  className={`flex items-center gap-2 text-xs px-3 py-2.5 rounded-xl border transition-all duration-200 ${lead.status === key
+                    ? `${val.bg} ${val.color} font-bold shadow-sm`
+                    : 'border-gray-150 text-gray-400 hover:border-gray-250 hover:text-gray-600 bg-white'
+                    }`}
+                >
+                  <Icon size={14} />
+                  {val.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Заметка</div>
+          <textarea
+            key={lead.id}
+            defaultValue={lead.note}
+            onBlur={(e) => onUpdate(lead.id, { note: e.target.value })}
+            placeholder="Добавьте заметку..."
+            className="w-full p-3.5 bg-gray-50 border-0 rounded-xl text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-[#DC2626]/15 text-gray-700 placeholder:text-gray-300"
+          />
+        </div>
+
+        <button
+          onClick={() => onDelete(lead.id)}
+          className="w-full flex items-center justify-center gap-2 text-red-400 hover:text-red-500 hover:bg-red-50 py-2.5 rounded-xl text-xs font-medium transition-all border border-transparent hover:border-red-100"
+        >
+          <Trash2 size={14} />
+          Удалить заявку
+        </button>
+      </div>
+    </>
   );
 }
 

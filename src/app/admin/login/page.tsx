@@ -62,11 +62,8 @@ export default function LoginPage() {
         className={`w-full max-w-[420px] relative z-10 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
       >
-        {/* Logo */}
+        {/* Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#DC2626] to-[#991b1b] rounded-2xl shadow-[0_8px_32px_rgba(220,38,38,0.35)] mb-5">
-            <span className="text-white font-black text-3xl tracking-tight">ВТ</span>
-          </div>
           <h1 className="text-white text-2xl font-bold tracking-tight">ВТ-Резерв</h1>
           <p className="text-gray-500 text-sm mt-1.5">Панель управления</p>
         </div>
