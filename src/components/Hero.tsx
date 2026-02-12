@@ -32,32 +32,27 @@ export default function Hero() {
 
   return (
     <section id="hero" className="relative min-h-screen bg-white overflow-hidden pt-16 sm:pt-20 md:pt-24">
-      {/* Декоративные элементы */}
-      <div className="absolute top-0 right-0 w-1/2 h-full opacity-5 pointer-events-none">
+      {/* Декоративные элементы — только десктоп */}
+      <div className="absolute top-0 right-0 w-1/2 h-full opacity-5 pointer-events-none hidden lg:block">
         <svg viewBox="0 0 400 800" className="w-full h-full">
           <path d="M200 0 L400 200 L400 600 L200 800 L0 600 L0 200 Z" fill="currentColor" className="text-[var(--dark-gray)]" />
         </svg>
       </div>
 
-      {/* Акцентная линия - скрыта на мобильном */}
+      {/* Акцентная линия — только десктоп */}
       <motion.div
         initial={{ height: 0 }}
         animate={{ height: '40%' }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="absolute left-8 md:left-16 top-1/4 w-1 bg-[var(--primary-red)] hidden md:block"
+        className="absolute left-16 top-1/4 w-1 bg-[var(--primary-red)] hidden lg:block"
       />
 
       <div className="relative z-10 max-w-[1400px] mx-auto min-h-screen">
-        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-screen">
           {/* Левая часть - текст */}
           <div className="flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-12 sm:py-16 lg:py-12">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-
-              {/* Главный заголовок */}
+            <div>
+              {/* Главный заголовок — без анимации для LCP */}
               <h1 className="mb-8">
                 <span className="block text-[var(--text-gray)] text-sm sm:text-base font-medium tracking-[0.2em] uppercase mb-4">
                   Городская навигация
@@ -70,7 +65,7 @@ export default function Hero() {
                 </span>
               </h1>
 
-              {/* Подзаголовок */}
+              {/* Подзаголовок — LCP элемент, рендерится сразу */}
               <p className="text-[var(--dark-gray)] text-lg sm:text-xl md:text-2xl font-medium max-w-lg mb-6 leading-snug">
                 Навигационные системы, которые делают город понятным
               </p>
@@ -120,7 +115,7 @@ export default function Hero() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Правая часть - слайдер изображений */}
@@ -151,6 +146,7 @@ export default function Hero() {
                       src={heroImages[currentImage]}
                       alt="Навигационные системы"
                       fill
+                      sizes="(max-width: 1024px) 0px, 50vw"
                       className="object-cover"
                       priority
                     />
@@ -216,6 +212,7 @@ export default function Hero() {
                 src={heroImages[currentImage]}
                 alt="Навигационные системы"
                 fill
+                sizes="(max-width: 1024px) 100vw, 0px"
                 className="object-cover"
                 priority
               />
