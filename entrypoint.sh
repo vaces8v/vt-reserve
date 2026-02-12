@@ -2,10 +2,10 @@
 set -e
 
 echo "⏳ Running Prisma generate..."
-bunx prisma generate
+bun ./node_modules/prisma/build/index.js generate
 
 echo "⏳ Pushing database schema..."
-bunx prisma db push --skip-generate
+bun ./node_modules/prisma/build/index.js db push --skip-generate
 
 echo "🌱 Running seed..."
 bun run prisma/seed.ts
