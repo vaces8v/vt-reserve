@@ -20,9 +20,7 @@ services:
 
   # ── Next.js App ─────────────────────────────────────
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/vaces8v/vt-reserve:latest
     container_name: vt-reserve-app
     restart: unless-stopped
     environment:
