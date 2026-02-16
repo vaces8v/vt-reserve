@@ -41,7 +41,7 @@ export default function Hero() {
         </svg>
       </div>
 
-      <div className="relative z-10 max-w-[1400px] mx-auto min-h-screen">
+      <div className="relative z-10 max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-screen">
           {/* Левая часть - текст */}
           <div className="flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 py-12 sm:py-16 lg:py-12">
@@ -180,7 +180,7 @@ export default function Hero() {
 
       {/* Мобильное изображение с анимацией */}
       <div
-        className={`lg:hidden relative mx-6 mb-8 -mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        className={`lg:hidden relative mx-6 mb-8 -mt-2 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
         <div className="relative aspect-[16/10] overflow-hidden rounded-lg">
           <AnimatePresence initial={false}>
