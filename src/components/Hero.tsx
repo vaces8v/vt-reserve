@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -14,8 +14,10 @@ const heroImages = [
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
     }, 4000);
@@ -38,8 +40,6 @@ export default function Hero() {
           <path d="M200 0 L400 200 L400 600 L200 800 L0 600 L0 200 Z" fill="currentColor" className="text-[var(--dark-gray)]" />
         </svg>
       </div>
-
-      {/* Акцентная линия убрана — наслаивалась на контент */}
 
       <div className="relative z-10 max-w-[1400px] mx-auto min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-screen">
@@ -73,23 +73,19 @@ export default function Hero() {
 
               {/* Кнопки */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <motion.button
+                <button
                   onClick={scrollToContact}
-                  whileHover={{ scale: 1.02, x: 5 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group inline-flex items-center justify-center gap-3 bg-[var(--primary-red)] text-white px-8 py-4 font-semibold text-base hover:bg-[var(--primary-red-dark)] transition-all duration-300"
+                  className="group inline-flex items-center justify-center gap-3 bg-[var(--primary-red)] text-white px-8 py-4 font-semibold text-base hover:bg-[var(--primary-red-dark)] hover:scale-[1.02] hover:translate-x-1 active:scale-[0.98] transition-all duration-300"
                 >
                   Обсудить проект
                   <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
-                </motion.button>
-                <motion.button
+                </button>
+                <button
                   onClick={scrollToServices}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center justify-center gap-3 bg-transparent text-[var(--dark-gray)] px-8 py-4 font-semibold text-base border-2 border-[var(--dark-gray)] hover:bg-[var(--dark-gray)] hover:text-white transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-3 bg-transparent text-[var(--dark-gray)] px-8 py-4 font-semibold text-base border-2 border-[var(--dark-gray)] hover:bg-[var(--dark-gray)] hover:text-white hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 >
                   Наши услуги
-                </motion.button>
+                </button>
               </div>
 
               {/* Статистика */}
@@ -113,11 +109,8 @@ export default function Hero() {
           </div>
 
           {/* Правая часть - слайдер изображений */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="relative hidden lg:flex items-center justify-center p-8"
+          <div
+            className={`relative hidden lg:flex items-center justify-center p-8 transition-all duration-1000 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
           >
             {/* Геометрическая рамка */}
             <div className="absolute inset-12 border-2 border-[var(--primary-red)]/20 transform rotate-3" />
@@ -181,16 +174,13 @@ export default function Hero() {
                 Городская навигация • 2024
               </span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Мобильное изображение с анимацией */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        className="lg:hidden relative mx-6 mb-8 -mt-8"
+      <div
+        className={`lg:hidden relative mx-6 mb-8 -mt-8 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
         <div className="relative aspect-[16/10] overflow-hidden rounded-lg">
           <AnimatePresence initial={false}>
@@ -233,34 +223,27 @@ export default function Hero() {
         </div>
 
         {/* Листайте - мобильная версия */}
-        <motion.button
+        <button
           onClick={scrollToServices}
-          animate={{ y: [0, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="flex items-center justify-center gap-2 w-full mt-6 text-[var(--text-gray)] hover:text-[var(--primary-red)] transition-colors"
+          className="flex items-center justify-center gap-2 w-full mt-6 text-[var(--text-gray)] hover:text-[var(--primary-red)] transition-colors animate-bounce-slow"
         >
           <span className="text-xs tracking-widest uppercase">Листайте</span>
           <ArrowDown size={18} />
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
 
       {/* Scroll indicator - desktop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block"
+      <div
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
       >
-        <motion.button
+        <button
           onClick={scrollToServices}
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="flex flex-col items-center gap-2 text-[var(--text-gray)] hover:text-[var(--primary-red)] transition-colors"
+          className="flex flex-col items-center gap-2 text-[var(--text-gray)] hover:text-[var(--primary-red)] transition-colors animate-bounce-slow"
         >
           <span className="text-xs tracking-widest uppercase">Листайте</span>
           <ArrowDown size={24} />
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
     </section>
   );
 }
