@@ -53,22 +53,9 @@ export default function Header() {
                 scrollToSection('#hero');
               }}
               whileHover={{ scale: 1.02 }}
-              className="flex items-center gap-3 group"
+              className="flex items-center group"
             >
-              <div className="relative">
-                <div className="w-11 h-11 bg-[var(--primary-red)] flex items-center justify-center">
-                  <span className="text-white font-black text-lg tracking-tight">ВТ</span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-[var(--dark-gray)]" />
-              </div>
-              <div>
-                <span className="block text-[var(--dark-gray)] font-bold text-sm sm:text-lg leading-tight tracking-tight">
-                  ВТ-РЕЗЕРВ
-                </span>
-                <span className="hidden sm:block text-[var(--text-gray)] text-[10px] uppercase tracking-[0.2em]">
-                  Навигация
-                </span>
-              </div>
+              <img src="/logo.svg" alt="ВТ-Резерв" className="h-10 w-auto" />
             </motion.a>
 
             {/* Desktop Navigation */}
@@ -149,12 +136,7 @@ export default function Header() {
               <div className="flex flex-col h-full">
                 {/* Header with logo and close button */}
                 <div className="flex items-center justify-between p-4 border-b border-[var(--border-gray)]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 bg-[var(--primary-red)] flex items-center justify-center">
-                      <span className="text-white font-black text-base">ВТ</span>
-                    </div>
-                    <span className="font-bold text-[var(--dark-gray)]">BT-РЕЗЕРВ</span>
-                  </div>
+                  <img src="/logo.svg" alt="ВТ-Резерв" className="h-8 w-auto" />
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     aria-label="Закрыть меню"

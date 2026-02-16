@@ -94,22 +94,15 @@ export default function AdminPage() {
     <div className="min-h-screen bg-[#f8f8f8]">
       {/* Mobile header — auto-hides on scroll */}
       <header className={`md:hidden fixed top-0 left-0 right-0 h-12 bg-[#0c0c0c] border-b border-white/[0.06] flex items-center justify-center px-4 z-40 transition-transform ${headerVisible ? 'duration-300 translate-y-0' : 'duration-150 -translate-y-full'}`}>
-        <span className="text-white font-bold text-sm">ВТ-Резерв</span>
+        <img src="/logo.svg" alt="ВТ-Резерв" className="h-7 w-auto" />
       </header>
 
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-[260px] bg-[#0c0c0c] text-white flex-col z-30 border-r border-white/[0.04]">
         {/* Logo */}
         <div className="p-5 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#DC2626] to-[#991b1b] rounded-xl flex items-center justify-center shadow-[0_4px_16px_rgba(220,38,38,0.3)]">
-              <span className="text-white font-black text-lg">ВТ</span>
-            </div>
-            <div>
-              <div className="font-bold text-[13px] text-white">ВТ-Резерв</div>
-              <div className="text-[11px] text-gray-500 font-medium">Панель управления</div>
-            </div>
-          </div>
+          <img src="/logo.svg" alt="ВТ-Резерв" className="h-10 w-auto" />
+          <div className="text-[11px] text-gray-500 font-medium mt-2">Панель управления</div>
         </div>
 
         {/* Nav section label */}

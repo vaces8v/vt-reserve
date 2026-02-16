@@ -63,17 +63,16 @@ export default function LoginPage() {
           }`}
       >
         {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-white text-2xl font-bold tracking-tight">ВТ-Резерв</h1>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <img src="/logo.svg" alt="ВТ-Резерв" className="h-12 w-auto mb-2" />
           <p className="text-gray-500 text-sm mt-1.5">Панель управления</p>
         </div>
 
         {/* Card */}
         <div className="bg-[#141414] border border-white/[0.06] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl overflow-hidden">
           <div className="p-8">
-            <div className="flex items-center gap-2 mb-6">
-              <Shield size={18} className="text-[#DC2626]" />
-              <span className="text-gray-400 text-sm font-medium">Авторизация</span>
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <span className="text-gray-400 text-sm font-medium text-center">Авторизация</span>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -144,7 +143,7 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="px-8 py-4 bg-white/[0.02] border-t border-white/[0.04]">
             <p className="text-gray-600 text-xs text-center">
-              Защищённое соединение • JWT авторизация
+              Защищённое соединение
             </p>
           </div>
         </div>
