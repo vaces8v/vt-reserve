@@ -40,11 +40,11 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-3">
               <a
-                href="mailto:vtreserve0@gmail.com"
-                className="flex items-center gap-2 text-gray-400 hover:text-[var(--primary-red)] transition-colors"
+                href="mailto:info@vt-reserve.ru"
+                className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors"
               >
                 <Mail size={18} />
-                vtreserve0@gmail.com
+                info@vt-reserve.ru
               </a>
               <div className="flex items-center gap-2 text-gray-400">
                 <MapPin size={18} className="flex-shrink-0" />

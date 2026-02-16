@@ -8,8 +8,8 @@ const contactInfo = [
   {
     icon: Mail,
     title: 'Email',
-    content: 'vtreserve0@gmail.com',
-    href: 'mailto:vtreserve0@gmail.com',
+    content: 'info@vt-reserve.ru',
+    href: 'mailto:info@vt-reserve.ru',
   },
   {
     icon: MapPin,
