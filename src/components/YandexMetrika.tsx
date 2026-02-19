@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 declare global {
@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-export default function YandexMetrika() {
+function YandexMetrikaScript() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -68,5 +68,13 @@ export default function YandexMetrika() {
         />
       </div>
     </noscript>
+  );
+}
+
+export default function YandexMetrika() {
+  return (
+    <Suspense fallback={null}>
+      <YandexMetrikaScript />
+    </Suspense>
   );
 }
