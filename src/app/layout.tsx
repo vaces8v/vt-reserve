@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Agentation } from "agentation";
+import YandexMetrika from "@/components/YandexMetrika";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,7 +75,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    yandex: "verification_token",
+    yandex: "0e4d6d545a2b1cbb",
   },
   alternates: {
     canonical: siteUrl,
@@ -96,6 +97,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <YandexMetrika />
         {process.env.NODE_ENV === "development" && <Agentation />}
         {children}
       </body>
