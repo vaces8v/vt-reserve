@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Agentation } from "agentation";
 import YandexMetrika from "@/components/YandexMetrika";
+import StructuredData from "@/components/StructuredData";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +29,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "ВТ-Резерв — Навигация и инфраструктура для города будущего",
+    default: "Навигационные системы в Москве — ВТ-Резерв",
     template: "%s | ВТ-Резерв",
   },
-  description: "ООО ВТ-Резерв — проектирование и производство навигационных систем, информационных указателей и элементов городской инфраструктуры в Москве и по всей России. 15+ лет опыта, 500+ проектов.",
+  description: "Проектирование и производство навигационных систем, информационных указателей, стел и элементов городской инфраструктуры в Москве. ООО ВТ-Резерв — 15+ лет опыта, 500+ реализованных объектов по всей России.",
   keywords: ["навигация", "указатели", "городская среда", "таблички", "вывески", "Москва", "информационные стенды", "навигационные системы", "городская инфраструктура"],
   authors: [{ name: "ВТ-Резерв", url: siteUrl }],
   creator: "ВТ-Резерв",
@@ -46,8 +47,8 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     url: siteUrl,
     siteName: "ВТ-Резерв",
-    title: "ВТ-Резерв — Навигация и инфраструктура для города будущего",
-    description: "Проектирование и производство навигационных систем, информационных указателей и элементов городской инфраструктуры. 15+ лет опыта.",
+    title: "Навигационные системы в Москве — ВТ-Резерв",
+    description: "Проектирование и производство навигационных систем, информационных указателей, стел для медучреждений, ЖК, парков и ТЦ. 15+ лет опыта, 500+ объектов.",
     images: [
       {
         url: "/opengraph-image",
@@ -59,8 +60,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ВТ-Резерв — Навигация и инфраструктура для города будущего",
-    description: "Проектирование и производство навигационных систем. 15+ лет опыта, 500+ проектов.",
+    title: "Навигационные системы в Москве — ВТ-Резерв",
+    description: "Производство навигационных систем, указателей и стел для любых объектов. 15+ лет опыта, 500+ проектов по России.",
     images: ["/opengraph-image"],
   },
   robots: {
@@ -74,11 +75,27 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    "yandex": "all",
+  },
   verification: {
     yandex: "0e4d6d545a2b1cbb",
   },
   alternates: {
     canonical: siteUrl,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/site.webmanifest',
+  appleWebApp: {
+    title: 'ВТ-Резерв',
   },
 };
 
@@ -91,8 +108,11 @@ export default function RootLayout({
     <html lang="ru">
       <head>
         <meta name="mailru-domain" content="dECEDbN4saRDcV5N" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="geo.region" content="RU-MOW" />
+        <meta name="geo.placename" content="Москва" />
+        <meta name="geo.position" content="55.800;37.390" />
+        <meta name="ICBM" content="55.800, 37.390" />
+        <StructuredData />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

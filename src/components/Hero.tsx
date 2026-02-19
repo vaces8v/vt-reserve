@@ -12,6 +12,13 @@ const heroImages = [
   '/example/5465161991300255360.jpg',
 ];
 
+const heroAlts = [
+  'Навигационная система ВТ-Резерв — указатели и стелы для городской инфраструктуры',
+  'Информационные стенды и указатели для парков и общественных пространств, Москва',
+  'Навигация в жилых комплексах — адресные таблички и въездные стелы, Москва',
+  'Комплексная навигация для бизнес-центров и ТЦ — производство ВТ-Резерв',
+];
+
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -49,7 +56,7 @@ export default function Hero() {
               {/* Главный заголовок — без анимации для LCP */}
               <h1 className="mb-8">
                 <span className="block text-[var(--text-gray)] text-sm sm:text-base font-medium tracking-[0.2em] uppercase mb-4">
-                  Городская навигация
+                  Навигационные системы
                 </span>
                 <span className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[var(--dark-gray)] leading-[1] tracking-tight">
                   Ориентируем
@@ -131,7 +138,7 @@ export default function Hero() {
                   >
                     <Image
                       src={heroImages[currentImage]}
-                      alt="Навигационные системы"
+                      alt={heroAlts[currentImage]}
                       fill
                       sizes="(max-width: 1024px) 0px, 50vw"
                       className="object-cover"
@@ -194,7 +201,7 @@ export default function Hero() {
             >
               <Image
                 src={heroImages[currentImage]}
-                alt="Навигационные системы"
+                alt={heroAlts[currentImage]}
                 fill
                 sizes="(max-width: 1024px) 100vw, 0px"
                 className="object-cover"

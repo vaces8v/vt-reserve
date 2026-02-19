@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, Check } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Drawer } from 'vaul';
 
 const services = [
@@ -65,17 +65,31 @@ const features = [
 
 export default function Services() {
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const scrollToContact = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-    setIsDrawerOpen(false);
+    setIsMobileDrawerOpen(false);
+    setIsSheetOpen(false);
   };
 
   const openService = (service: typeof services[0]) => {
     setSelectedService(service);
-    setIsDrawerOpen(true);
+    setIsMobileDrawerOpen(true);
+    setIsSheetOpen(true);
   };
+
+  useEffect(() => {
+    if (isSheetOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isSheetOpen]);
 
   return (
     <section id="services" className="py-20 md:py-32 bg-white overflow-hidden">
@@ -95,12 +109,9 @@ export default function Services() {
               </span>
             </div>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[var(--dark-gray)] leading-[0.95]">
-              РЕАЛИЗУЕМ
-              <span className="block text-[var(--primary-red)]">САМЫЕ</span>
-              <span className="block">СЛОЖНЫЕ</span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl font-light text-[var(--text-gray)] mt-2">
-                проекты
-              </span>
+              НАВИГАЦИОННЫЕ
+              <span className="block text-[var(--primary-red)]">СИСТЕМЫ</span>
+              <span className="block">ДЛЯ ЛЮБЫХ ОБЪЕКТОВ</span>
             </h2>
           </motion.div>
 
@@ -210,10 +221,16 @@ export default function Services() {
       </div>
 
       {/* Service Detail Drawer (Mobile) */}
-      <Drawer.Root open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <Drawer.Root open={isMobileDrawerOpen} onOpenChange={setIsMobileDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 md:hidden" />
-          <Drawer.Content className="fixed bottom-0 left-0 right-0 max-h-[90vh] bg-white rounded-t-[20px] z-50 outline-none flex flex-col md:hidden">
+          <Drawer.Content
+            aria-describedby={undefined}
+            className="fixed bottom-0 left-0 right-0 max-h-[90vh] bg-white rounded-t-[20px] z-50 outline-none flex flex-col md:hidden"
+          >
+            <Drawer.Title className="sr-only">
+              {selectedService?.title ?? 'Детали услуги'}
+            </Drawer.Title>
             <div className="p-4 bg-white rounded-t-[20px] flex-1 overflow-y-auto">
               <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-6" />
 
@@ -224,11 +241,12 @@ export default function Services() {
                       src={selectedService.image}
                       alt={selectedService.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 672px"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <button
-                      onClick={() => setIsDrawerOpen(false)}
+                      onClick={() => setIsMobileDrawerOpen(false)}
                       className="absolute top-4 right-4 w-8 h-8 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
                     >
                       <X size={16} />
@@ -272,82 +290,104 @@ export default function Services() {
         </Drawer.Portal>
       </Drawer.Root>
 
-      {/* Service Detail Side Panel (Desktop) */}
+      {/* Service Detail Sheet (Desktop) */}
       <AnimatePresence>
-        {isDrawerOpen && (
+        {isSheetOpen && selectedService && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsDrawerOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden md:block"
+              transition={{ duration: 0.25 }}
+              onClick={() => setIsSheetOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 max-md:hidden"
             />
+
+            {/* Sheet Panel */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-2xl bg-white shadow-2xl z-50 hidden md:flex flex-col"
+              transition={{ type: 'spring', damping: 30, stiffness: 220 }}
+              className="fixed top-0 right-0 h-svh w-full max-w-[500px] bg-white z-[51] flex flex-col shadow-[−4px_0_40px_rgba(0,0,0,0.15)] max-md:hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              {selectedService && (
-                <div className="flex flex-col h-full">
-                  {/* Header Image */}
-                  <div className="relative h-64 sm:h-80 w-full flex-shrink-0">
-                    <Image
-                      src={selectedService.image}
-                      alt={selectedService.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <button
-                      onClick={() => setIsDrawerOpen(false)}
-                      className="absolute top-6 right-6 w-10 h-10 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
+              {/* Image Header — shrink-0 keeps it fixed height */}
+              <div className="relative h-72 shrink-0 overflow-hidden">
+                <Image
+                  src={selectedService.image}
+                  alt={selectedService.title}
+                  fill
+                  sizes="500px"
+                  className="object-cover"
+                  priority
+                />
+                {/* Dark gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+
+                {/* Close */}
+                <button
+                  onClick={() => setIsSheetOpen(false)}
+                  className="absolute top-5 right-5 w-9 h-9 bg-white/10 hover:bg-white/25 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 transition-all"
+                >
+                  <X size={16} />
+                </button>
+
+                {/* Tag + Title over image */}
+                <div className="absolute bottom-0 left-0 right-0 px-7 pb-7">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="w-6 h-[2px] bg-[var(--primary-red)]" />
+                    <span className="text-white/60 text-[11px] font-semibold uppercase tracking-[0.2em]">
+                      Услуга
+                    </span>
                   </div>
+                  <h2 className="text-white font-black text-2xl leading-tight">
+                    {selectedService.title}
+                  </h2>
+                </div>
+              </div>
 
-                  {/* Content Scrollable Area */}
-                  <div className="flex-1 overflow-y-auto p-8 sm:p-10">
-                    <h3 className="text-3xl sm:text-4xl font-black text-[var(--dark-gray)] mb-6 leading-tight">
-                      {selectedService.title}
+              {/* Scrollable content — min-h-0 is critical to enable scroll */}
+              <div className="flex-1 overflow-y-auto min-h-0">
+                <div className="px-7 py-7">
+                  <p className="text-[var(--text-gray)] text-base leading-relaxed mb-8">
+                    {selectedService.description}
+                  </p>
+
+                  <div>
+                    <h3 className="text-[11px] font-bold text-[var(--dark-gray)] uppercase tracking-[0.2em] mb-4">
+                      Что входит в услугу
                     </h3>
-
-                    <p className="text-[var(--text-gray)] text-lg sm:text-xl leading-relaxed mb-10">
-                      {selectedService.description}
-                    </p>
-
-                    <h4 className="text-[var(--dark-gray)] font-bold text-lg mb-4 uppercase tracking-wider">
-                      Что входит в услугу:
-                    </h4>
-                    <div className="grid grid-cols-1 gap-4 mb-10">
+                    <div className="space-y-2.5">
                       {selectedService.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-4 bg-[var(--light-gray)] p-4 rounded-xl">
-                          <div className="w-8 h-8 rounded-full bg-[var(--primary-red)]/10 flex items-center justify-center flex-shrink-0">
-                            <Check size={16} className="text-[var(--primary-red)]" />
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3.5 bg-[var(--light-gray)] hover:bg-gray-100 px-4 py-3.5 rounded-xl transition-colors"
+                        >
+                          <div className="w-7 h-7 rounded-full bg-[var(--primary-red)]/10 flex items-center justify-center shrink-0">
+                            <Check size={13} className="text-[var(--primary-red)]" />
                           </div>
-                          <span className="text-[var(--dark-gray)] font-medium text-base">
+                          <span className="text-[var(--dark-gray)] font-medium text-sm">
                             {feature}
                           </span>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  {/* Footer CTA */}
-                  <div className="p-8 border-t border-[var(--border-gray)] bg-white">
-                    <button
-                      onClick={scrollToContact}
-                      className="w-full bg-[var(--primary-red)] text-white py-5 rounded-xl font-bold text-xl hover:bg-[var(--primary-red-dark)] hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-3"
-                    >
-                      Заказать расчет
-                      <ArrowRight size={24} />
-                    </button>
-                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* Fixed footer — shrink-0 keeps it at bottom */}
+              <div className="shrink-0 px-7 py-5 bg-white border-t border-gray-100">
+                <button
+                  onClick={scrollToContact}
+                  className="group w-full bg-[var(--primary-red)] text-white py-4 rounded-xl font-bold text-base hover:bg-[var(--primary-red-dark)] active:scale-[0.99] transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-red-600/20"
+                >
+                  Заказать расчет
+                  <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
             </motion.div>
           </>
         )}

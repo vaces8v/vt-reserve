@@ -67,7 +67,7 @@ export default function About() {
                   >
                     <Image
                       src={aboutImages[currentImage]}
-                      alt="Наше производство"
+                      alt="Производство навигационных систем и информационных указателей — ВТ-Резерв, Москва"
                       fill
                       className="object-cover"
                     />
@@ -170,8 +170,9 @@ export default function About() {
             </div>
 
             <h2 className="text-4xl sm:text-5xl font-black text-[var(--dark-gray)] leading-[0.95] mb-6">
-              НАШЕ
-              <span className="block text-[var(--primary-red)]">ПРИЗВАНИЕ</span>
+              ПРОИЗВОДСТВО
+              <span className="block text-[var(--primary-red)]">НАВИГАЦИИ</span>
+              <span className="block">В МОСКВЕ</span>
             </h2>
 
             <p className="text-xl md:text-2xl text-[var(--dark-gray)] font-medium mb-6 leading-relaxed">
