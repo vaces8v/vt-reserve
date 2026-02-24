@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Clock, Send, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const contactInfo = [
   {
@@ -32,6 +33,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -230,12 +232,28 @@ export default function Contact() {
                     />
                   </div>
 
+                  <label className="flex items-start gap-3 mt-6 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      required
+                      className="mt-1 w-4 h-4 accent-[var(--primary-red)] flex-shrink-0"
+                    />
+                    <span className="text-xs text-[var(--text-gray)] leading-relaxed">
+                      Я даю согласие на обработку моих персональных данных в соответствии с{' '}
+                      <Link href="/privacy" target="_blank" className="text-[var(--primary-red)] hover:underline">
+                        Политикой конфиденциальности
+                      </Link>
+                    </span>
+                  </label>
+
                   <motion.button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !agreed}
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[var(--primary-red)] text-white py-5 font-bold hover:bg-[var(--primary-red-dark)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 mt-8"
+                    className="w-full bg-[var(--primary-red)] text-white py-5 font-bold hover:bg-[var(--primary-red-dark)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 mt-4"
                   >
                     {isSubmitting ? (
                       <>

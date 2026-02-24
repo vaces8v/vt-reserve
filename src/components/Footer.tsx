@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ArrowUp, Mail, MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 const footerLinks = [
   { name: 'Главная', href: '#hero' },
@@ -77,13 +78,23 @@ export default function Footer() {
               <p>ИНН: 7733411950</p>
               <p>КПП: 773301001</p>
             </div>
+            <Link
+              href="/privacy"
+              className="inline-block mt-4 text-gray-500 hover:text-[var(--primary-red)] transition-colors text-sm"
+            >
+              Политика конфиденциальности
+            </Link>
           </div>
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} ООО «ВТ-Резерв». Все права защищены.
-          </p>
+          <div className="text-gray-400 text-sm flex flex-col sm:flex-row items-center gap-2">
+            <p>© {new Date().getFullYear()} ООО «ВТ-Резерв». Все права защищены.</p>
+            <span className="hidden sm:inline">·</span>
+            <Link href="/privacy" className="hover:text-[var(--primary-red)] transition-colors">
+              Политика конфиденциальности
+            </Link>
+          </div>
 
           <motion.button
             onClick={scrollToTop}
