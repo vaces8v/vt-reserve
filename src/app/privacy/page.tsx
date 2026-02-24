@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm mb-8"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             На главную
           </Link>
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
         <div className="prose prose-lg max-w-none text-[var(--dark-gray)]">
 
           <p className="text-[var(--text-gray)] text-sm mb-8">
-            Дата последнего обновления: 24 февраля 2025&nbsp;г.
+            Дата последнего обновления: 24 февраля 2026&nbsp;г.
           </p>
 
           <h2 className="text-2xl font-black text-[var(--dark-gray)] mt-10 mb-4">1. ОБЩИЕ ПОЛОЖЕНИЯ</h2>
@@ -178,7 +178,7 @@ export default function PrivacyPage() {
             className="inline-flex items-center gap-2 text-[var(--primary-red)] hover:underline font-semibold"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Вернуться на главную
           </Link>
