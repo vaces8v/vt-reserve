@@ -34,14 +34,11 @@ export default function Header() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: isMobileMenuOpen ? -100 : 0 }}
-        transition={{ duration: 0, ease: 'easeInOut' }}
+      <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
           ? 'bg-white shadow-[0_2px_30px_rgba(0,0,0,0.08)]'
           : 'bg-transparent'
-          } ${isMobileMenuOpen ? 'lg:translate-y-0' : ''}`}
+          } ${isMobileMenuOpen ? '-translate-y-full lg:translate-y-0' : 'translate-y-0'}`}
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -105,7 +102,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Menu */}
       <AnimatePresence>
