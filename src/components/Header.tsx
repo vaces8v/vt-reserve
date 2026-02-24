@@ -35,9 +35,10 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
+        style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+        className={`fixed top-0 left-0 right-0 z-50 will-change-transform transition-[background-color,box-shadow,transform] duration-500 ${isScrolled
           ? 'bg-white shadow-[0_2px_30px_rgba(0,0,0,0.08)]'
-          : 'bg-transparent'
+          : 'bg-white/0 shadow-none'
           } ${isMobileMenuOpen ? '-translate-y-full lg:translate-y-0' : 'translate-y-0'}`}
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">

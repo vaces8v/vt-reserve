@@ -40,7 +40,7 @@ export default function Hero() {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen bg-white overflow-hidden pt-16 sm:pt-20 md:pt-24">
+    <section id="hero" className="relative min-h-screen bg-white overflow-clip pt-16 sm:pt-20 md:pt-24">
       {/* Декоративные элементы — только десктоп */}
       <div className="absolute top-0 right-0 w-1/2 h-full opacity-5 pointer-events-none hidden lg:block">
         <svg viewBox="0 0 400 800" className="w-full h-full">
