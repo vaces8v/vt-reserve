@@ -11,6 +11,7 @@ const schema = {
   image: `${siteUrl}/opengraph-image`,
   description:
     'Проектирование и производство навигационных систем, информационных указателей и элементов городской инфраструктуры. Более 15 лет опыта, 500+ реализованных объектов по всей России.',
+  telephone: '+7 (495) 004-03-81',
   email: 'info@vt-reserve.ru',
   address: {
     '@type': 'PostalAddress',

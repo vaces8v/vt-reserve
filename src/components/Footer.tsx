@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowUp, Mail, MapPin } from 'lucide-react';
+import { ArrowUp, Mail, MapPin, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = [
@@ -37,6 +37,13 @@ export default function Footer() {
               Создаём понятную и комфортную городскую среду.
             </p>
             <div className="flex flex-col gap-3">
+              <a
+                href="tel:+74950040381"
+                className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors"
+              >
+                <Phone size={18} />
+                +7 (495) 004-03-81
+              </a>
               <a
                 href="mailto:info@vt-reserve.ru"
                 className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors"

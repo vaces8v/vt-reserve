@@ -1,11 +1,17 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MapPin, Mail, Clock, Send, ArrowRight } from 'lucide-react';
+import { MapPin, Mail, Clock, Send, ArrowRight, Phone } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 
 const contactInfo = [
+  {
+    icon: Phone,
+    title: 'Телефон',
+    content: '+7 (495) 004-03-81',
+    href: 'tel:+74950040381',
+  },
   {
     icon: Mail,
     title: 'Email',

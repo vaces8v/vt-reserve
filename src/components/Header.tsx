@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, Phone } from 'lucide-react';
 
 const navItems = [
   { name: 'Главная', href: '#hero' },
@@ -76,6 +76,15 @@ export default function Header() {
 
             {/* Right side */}
             <div className="flex items-center gap-4">
+              {/* Phone */}
+              <a
+                href="tel:+74950040381"
+                className="hidden lg:flex items-center gap-2 text-[var(--dark-gray)] hover:text-[var(--primary-red)] transition-colors font-medium"
+              >
+                <Phone size={18} />
+                +7 (495) 004-03-81
+              </a>
+
               {/* CTA Button */}
               <motion.a
                 href="#contact"
