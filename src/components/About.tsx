@@ -131,7 +131,7 @@ export default function About() {
             {/* Additional stats row */}
             <div className="grid grid-cols-3 gap-4 mt-8">
               {[
-                { value: '500+', label: 'Проектов' },
+                { value: '100+', label: 'Проектов' },
                 { value: '50+', label: 'Городов' },
                 { value: '100%', label: 'Гарантия' },
               ].map((stat, index) => (

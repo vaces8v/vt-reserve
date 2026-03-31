@@ -37,7 +37,7 @@ export default async function Image() {
             opacity: 0.5,
           }}
         />
-        
+
         {/* Red accent line */}
         <div
           style={{
@@ -195,7 +195,7 @@ export default async function Image() {
           }}
         >
           {[
-            { value: '500+', label: 'Проектов' },
+            { value: '100+', label: 'Проектов' },
             { value: '15', label: 'Лет опыта' },
             { value: '50+', label: 'Городов' },
           ].map((stat) => (

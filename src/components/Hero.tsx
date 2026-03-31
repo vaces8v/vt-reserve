@@ -98,7 +98,7 @@ export default function Hero() {
               {/* Статистика */}
               <div className="flex flex-wrap gap-6 sm:gap-8 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-[var(--border-gray)]">
                 {[
-                  { value: '500+', label: 'Проектов' },
+                  { value: '100+', label: 'Проектов' },
                   { value: '15', label: 'Лет опыта' },
                   { value: '50+', label: 'Городов' },
                 ].map((stat, index) => (
