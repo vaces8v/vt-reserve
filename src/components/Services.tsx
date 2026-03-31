@@ -85,12 +85,18 @@ export default function Services() {
   const unlockScroll = useCallback(() => {
     if (!isScrollLocked.current) return;
     const y = savedScrollY.current;
+    // Temporarily disable smooth scroll so restore is instant
+    document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.left = '';
     document.body.style.right = '';
     document.body.style.overflow = '';
     window.scrollTo(0, y);
+    // Re-enable smooth scroll on next frame
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = '';
+    });
     isScrollLocked.current = false;
   }, []);
 
@@ -320,7 +326,7 @@ export default function Services() {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="fixed bottom-0 left-0 right-0 max-h-[90vh] bg-white rounded-t-[20px] z-50 flex flex-col md:hidden"
+              className="fixed inset-0 bg-white z-50 flex flex-col md:hidden"
               style={{ opacity: dragOffset > 0 ? Math.max(0, 1 - dragOffset / 400) : 1 }}
             >
               {/* Drag handle */}
