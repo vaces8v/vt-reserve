@@ -3,8 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, Check } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Drawer } from 'vaul';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 const services = [
   {
@@ -68,28 +67,104 @@ export default function Services() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
+  // Scroll lock: save position, fix body, restore on unlock
+  const savedScrollY = useRef(0);
+  const isScrollLocked = useRef(false);
+
+  const lockScroll = useCallback(() => {
+    if (isScrollLocked.current) return;
+    savedScrollY.current = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY.current}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+    isScrollLocked.current = true;
+  }, []);
+
+  const unlockScroll = useCallback(() => {
+    if (!isScrollLocked.current) return;
+    const y = savedScrollY.current;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, y);
+    isScrollLocked.current = false;
+  }, []);
+
+  const openService = (service: typeof services[0]) => {
+    setSelectedService(service);
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) {
+      setIsMobileDrawerOpen(true);
+    } else {
+      setIsSheetOpen(true);
+    }
+  };
+
   const scrollToContact = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
     setIsMobileDrawerOpen(false);
     setIsSheetOpen(false);
   };
 
-  const openService = (service: typeof services[0]) => {
-    setSelectedService(service);
-    setIsMobileDrawerOpen(true);
-    setIsSheetOpen(true);
-  };
+  // Touch gesture state for custom drawer swipe-to-dismiss
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const isDragging = useRef(false);
 
-  useEffect(() => {
-    if (isSheetOpen) {
-      document.body.style.overflow = 'hidden';
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const scrollEl = scrollRef.current;
+    // Allow drag only when scroll is at top
+    if (scrollEl && scrollEl.scrollTop > 0) return;
+    touchStartY.current = e.touches[0].clientY;
+    isDragging.current = true;
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    const scrollEl = scrollRef.current;
+    // If user scrolled down, cancel drag
+    if (scrollEl && scrollEl.scrollTop > 0) {
+      isDragging.current = false;
+      setDragOffset(0);
+      return;
+    }
+    const diff = e.touches[0].clientY - touchStartY.current;
+    if (diff > 0) {
+      setDragOffset(diff);
+      // Prevent scroll while dragging
+      e.preventDefault();
     } else {
-      document.body.style.overflow = '';
+      setDragOffset(0);
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    if (dragOffset > 100) {
+      setIsMobileDrawerOpen(false);
+    }
+    setDragOffset(0);
+  }, [dragOffset]);
+
+  // Unified scroll lock — lock when any overlay is open, unlock when all closed
+  useEffect(() => {
+    const anyOpen = isMobileDrawerOpen || isSheetOpen;
+    if (anyOpen) {
+      lockScroll();
+    } else {
+      unlockScroll();
     }
     return () => {
-      document.body.style.overflow = '';
+      unlockScroll();
     };
-  }, [isSheetOpen]);
+  }, [isMobileDrawerOpen, isSheetOpen, lockScroll, unlockScroll]);
 
   return (
     <section id="services" className="py-20 md:py-32 bg-white overflow-hidden">
@@ -170,6 +245,7 @@ export default function Services() {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  loading={index < 4 ? 'eager' : 'lazy'}
                 />
 
                 {/* Overlay */}
@@ -200,7 +276,7 @@ export default function Services() {
           ))}
         </div>
 
-        {/* CTA */}
+        {/* CTA */}й
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -220,21 +296,40 @@ export default function Services() {
         </motion.div>
       </div>
 
-      {/* Service Detail Drawer (Mobile) */}
-      <Drawer.Root open={isMobileDrawerOpen} onOpenChange={setIsMobileDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 md:hidden" />
-          <Drawer.Content
-            aria-describedby={undefined}
-            className="fixed bottom-0 left-0 right-0 max-h-[90vh] bg-white rounded-t-[20px] z-50 outline-none flex flex-col md:hidden"
-          >
-            <Drawer.Title className="sr-only">
-              {selectedService?.title ?? 'Детали услуги'}
-            </Drawer.Title>
-            <div className="p-4 bg-white rounded-t-[20px] flex-1 overflow-y-auto">
-              <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mb-6" />
+      {/* Service Detail Drawer (Mobile) — custom implementation */}
+      <AnimatePresence>
+        {isMobileDrawerOpen && selectedService && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setIsMobileDrawerOpen(false)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 md:hidden"
+            />
 
-              {selectedService && (
+            {/* Drawer panel */}
+            <motion.div
+              ref={drawerRef}
+              initial={{ y: '100%' }}
+              animate={{ y: dragOffset > 0 ? dragOffset : 0 }}
+              exit={{ y: '100%' }}
+              transition={dragOffset > 0 ? { duration: 0 } : { type: 'spring', damping: 30, stiffness: 300 }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className="fixed bottom-0 left-0 right-0 max-h-[90vh] bg-white rounded-t-[20px] z-50 flex flex-col md:hidden"
+              style={{ opacity: dragOffset > 0 ? Math.max(0, 1 - dragOffset / 400) : 1 }}
+            >
+              {/* Drag handle */}
+              <div className="shrink-0 pt-4 pb-2 flex justify-center cursor-grab">
+                <div className="w-12 h-1.5 rounded-full bg-gray-300" />
+              </div>
+
+              {/* Scrollable content */}
+              <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain px-4 pb-4">
                 <div className="max-w-2xl mx-auto pb-8">
                   <div className="relative aspect-video w-full rounded-2xl overflow-hidden mb-6 shadow-lg">
                     <Image
@@ -254,7 +349,7 @@ export default function Services() {
                   </div>
 
                   <div className="px-2">
-                    <h3 className="text-2xl md:text-3xl font-black text-[var(--dark-gray)] mb-4 leading-tight">
+                    <h3 className="text-2xl font-black text-[var(--dark-gray)] mb-4 leading-tight">
                       {selectedService.title}
                     </h3>
 
@@ -262,7 +357,7 @@ export default function Services() {
                       {selectedService.description}
                     </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div className="grid grid-cols-1 gap-3 mb-8">
                       {selectedService.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-3 bg-[var(--light-gray)] p-3 rounded-lg">
                           <div className="w-6 h-6 rounded-full bg-[var(--primary-red)]/10 flex items-center justify-center flex-shrink-0">
@@ -274,21 +369,24 @@ export default function Services() {
                         </div>
                       ))}
                     </div>
-
-                    <button
-                      onClick={scrollToContact}
-                      className="w-full bg-[var(--primary-red)] text-white py-4 rounded-xl font-bold text-lg hover:bg-[var(--primary-red-dark)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                    >
-                      Заказать расчет
-                      <ArrowRight size={20} />
-                    </button>
                   </div>
                 </div>
-              )}
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+              </div>
+
+              {/* Fixed bottom CTA */}
+              <div className="shrink-0 px-4 pb-6 pt-3 bg-white border-t border-gray-100">
+                <button
+                  onClick={scrollToContact}
+                  className="w-full bg-[var(--primary-red)] text-white py-4 rounded-xl font-bold text-lg hover:bg-[var(--primary-red-dark)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  Заказать расчет
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Service Detail Sheet (Desktop) */}
       <AnimatePresence>

@@ -85,10 +85,10 @@ export default function Certificates() {
               <div className="relative h-full overflow-hidden border border-[var(--border-gray)] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(16,24,40,0.06)] hover:border-[var(--primary-red)]/30 flex flex-col">
 
                 {/* Top Section: Small Preview */}
-                <div className="relative w-full aspect-[4/3] bg-[var(--light-gray)] overflow-hidden flex items-center justify-center p-6 group-hover:bg-[#f4f5f7] transition-colors duration-500">
+                <div className="relative w-full bg-[var(--light-gray)] overflow-hidden flex items-center justify-center py-6 px-4 sm:p-6 sm:aspect-4/3 group-hover:bg-[#f4f5f7] transition-colors duration-500">
 
                   {/* Document Thumbnail */}
-                  <div className="relative w-28 sm:w-32 aspect-[1/1.41] bg-white shadow-[0_4px_15px_rgba(0,0,0,0.08)] border border-black/5 transition-all duration-500 group-hover:shadow-[0_12px_25px_rgba(0,0,0,0.12)] group-hover:-translate-y-1.5 group-hover:rotate-2">
+                  <div className="relative w-[70%] sm:w-32 aspect-[1/1.41] bg-white shadow-[0_4px_15px_rgba(0,0,0,0.08)] border border-black/5 transition-all duration-500 group-hover:shadow-[0_12px_25px_rgba(0,0,0,0.12)] group-hover:-translate-y-1.5 group-hover:rotate-2">
                     <img
                       src={cert.preview}
                       alt={cert.title}

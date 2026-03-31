@@ -2,8 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, Loader2 } from 'lucide-react';
 
 const portfolioAlts = [
   'Навигационная система в медицинском учреждении — указатели кабинетов',
@@ -131,11 +131,13 @@ const portfolioImages = [
 export default function Portfolio() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
 
   const displayedImages = showAll ? portfolioImages : portfolioImages.slice(0, 12);
 
   const openLightbox = (index: number) => {
     setSelectedImage(index);
+    setImageLoading(true);
     document.body.style.overflow = 'hidden';
   };
 
@@ -146,15 +148,21 @@ export default function Portfolio() {
 
   const goToPrevious = () => {
     if (selectedImage !== null) {
+      setImageLoading(true);
       setSelectedImage(selectedImage === 0 ? portfolioImages.length - 1 : selectedImage - 1);
     }
   };
 
   const goToNext = () => {
     if (selectedImage !== null) {
+      setImageLoading(true);
       setSelectedImage(selectedImage === portfolioImages.length - 1 ? 0 : selectedImage + 1);
     }
   };
+
+  const onImageLoad = useCallback(() => {
+    setImageLoading(false);
+  }, []);
 
   return (
     <section id="portfolio" className="section-padding bg-[var(--light-gray)]">
@@ -288,13 +296,21 @@ export default function Portfolio() {
               className="relative max-w-5xl max-h-[85vh] w-full h-full"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Loading spinner */}
+              {imageLoading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center">
+                  <Loader2 size={36} className="text-white animate-spin" />
+                </div>
+              )}
               <Image
+                key={selectedImage}
                 src={portfolioImages[selectedImage]}
                 alt={portfolioAlts[selectedImage] ?? `Навигационная система — реализованный проект ВТ-Резерв`}
                 fill
-                className="object-contain"
+                className={`object-contain transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                 sizes="100vw"
                 priority
+                onLoad={onImageLoad}
               />
             </motion.div>
 

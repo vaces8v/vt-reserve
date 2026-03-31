@@ -4,6 +4,7 @@ import "./globals.css";
 import { Agentation } from "agentation";
 import YandexMetrika from "@/components/YandexMetrika";
 import StructuredData from "@/components/StructuredData";
+import ChunkErrorRecovery from "@/components/ChunkErrorRecovery";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -118,6 +119,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <YandexMetrika />
+        <ChunkErrorRecovery />
         {process.env.NODE_ENV === "development" && <Agentation />}
         {children}
       </body>

@@ -124,8 +124,8 @@ export default function About() {
                 <div className="text-[var(--text-gray)] text-sm">на рынке России</div>
               </motion.div>
 
-              {/* Decorative frame */}
-              <div className="absolute -top-4 -left-4 w-24 h-24 border-4 border-[var(--primary-red)] -z-10" />
+              {/* Decorative frame — hidden on mobile to prevent flash artifact */}
+              <div className="absolute -top-4 -left-4 w-24 h-24 border-4 border-[var(--primary-red)] -z-10 hidden md:block" />
             </div>
 
             {/* Additional stats row */}
