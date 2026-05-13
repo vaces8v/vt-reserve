@@ -5,6 +5,7 @@ import { Agentation } from "agentation";
 import YandexMetrika from "@/components/YandexMetrika";
 import StructuredData from "@/components/StructuredData";
 import ChunkErrorRecovery from "@/components/ChunkErrorRecovery";
+import CookieBanner from "@/components/CookieBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -122,6 +123,7 @@ export default function RootLayout({
         <ChunkErrorRecovery />
         {process.env.NODE_ENV === "development" && <Agentation />}
         {children}
+        <CookieBanner />
       </body>
     </html>
   );
